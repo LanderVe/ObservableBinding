@@ -1,0 +1,22 @@
+﻿<Window x:Class="ObservableBinding.WPF.Converter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ObservableBinding.WPF.Converter"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+  <StackPanel x:Name="sp">
+    <TextBlock x:Name="txt">
+      <TextBlock.Text>
+        <Binding Path="StringStream">
+          <Binding.Converter>
+            <local:ObservableConverter BindingTarget="{Binding RelativeSource={RelativeSource AncestorType=TextBlock, Mode=FindAncestor}}"/>
+          </Binding.Converter>
+        </Binding>
+      </TextBlock.Text>
+    </TextBlock>
+
+    <Button Content="remove children" Click="Button_Click"/>
+  </StackPanel>
+</Window>

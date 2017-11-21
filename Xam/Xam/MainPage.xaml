@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:o="clr-namespace:Xam"
+             x:Class="Xam.MainPage">
+
+  <StackLayout x:Name="sl">
+    <Label Text="{o:Bind StringStream, Mode=OneWay}"/>
+    <Label Text="{o:Bind StringSubject, Mode=OneWay}"/>
+    <Entry Text="{o:Bind StringSubject, Mode=OneWay}"/>
+    <Entry Text="{o:Bind StringSubject, Mode=OneWayToSource}"/>
+    <Entry Text="{o:Bind StringSubject, Mode=TwoWay}"/>
+
+    <Slider Value="{o:Bind DoubleSubject, Mode=TwoWay}" Maximum="100"/>
+    <Label Text="{o:Bind DoubleSubject, Mode=OneWay}"/>
+
+    <Button Text="remove children" Clicked="Button_Clicked"/>
+  </StackLayout>
+  
+</ContentPage>
