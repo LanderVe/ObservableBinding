@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace ObservableBinding.UWP.AttachedProp
 {
-  public static class OEmit
+  public static class Emit
   {
     private static SubscriptionKeeper subscriptionKeeper = new SubscriptionKeeper();
 
@@ -31,7 +31,7 @@ namespace ObservableBinding.UWP.AttachedProp
     public static readonly DependencyProperty TextProperty =
     DependencyProperty.RegisterAttached("Text",
       typeof(IObserver<string>),
-      typeof(OEmit),
+      typeof(Emit),
       new PropertyMetadata(null, (d, e) => OnPropertyChanged<string>(d, e, TextBox.TextProperty)));
 
     #endregion
@@ -50,7 +50,7 @@ namespace ObservableBinding.UWP.AttachedProp
     public static readonly DependencyProperty ValueAsDoubleProperty =
         DependencyProperty.RegisterAttached("ValueAsDouble",
           typeof(IObserver<double>),
-          typeof(OEmit),
+          typeof(Emit),
           new PropertyMetadata(null, (d, e) => OnPropertyChanged<double>(d, e, RangeBase.ValueProperty)));
 
     #endregion

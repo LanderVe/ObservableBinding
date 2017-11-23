@@ -2,22 +2,22 @@
     x:Class="ObservableBinding.UWP.AttachedProp.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ObservableBinding.UWP.AttachedProp"
+    xmlns:o="using:ObservableBinding.UWP.AttachedProp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
   <StackPanel x:Name="sp">
 
-    <TextBlock local:OBind.Text="{Binding StringStream}"/>
-    <TextBox local:OBind.Text="{Binding StringStream}"/>
-    <TextBox local:OEmit.Text="{Binding StringSubject}" />
-    <TextBox local:OEmit.Text="{Binding StringSubject}" 
-             local:OBind.Text="{Binding StringSubject}"/>
-    <TextBlock local:OBind.Text="{Binding StringSubject}"/>
-    <Slider local:OEmit.ValueAsDouble="{Binding DoubleSubject}" Maximum="100"/>
-    <TextBlock local:OBind.Text="{Binding DoubleAsStringStream}"/>
-    <ProgressBar local:OBind.ValueAsDouble="{Binding DoubleSubject}" Maximum="100" IsIndeterminate="False"/>
+    <TextBlock o:Bind.Text="{Binding StringStream}"/>
+    <TextBox o:Bind.Text="{Binding StringStream}"/>
+    <TextBox o:Emit.Text="{Binding StringSubject}" />
+    <TextBox o:Emit.Text="{Binding StringSubject}" 
+             o:Bind.Text="{Binding StringSubject}"/>
+    <TextBlock o:Bind.Text="{Binding StringSubject}"/>
+    <Slider o:Emit.ValueAsDouble="{Binding DoubleSubject}" Maximum="100"/>
+    <TextBlock o:Bind.Text="{Binding DoubleAsStringStream}"/>
+    <ProgressBar o:Bind.ValueAsDouble="{Binding DoubleSubject}" Maximum="100" IsIndeterminate="False"/>
 
     <Button Content="remove children" Click="Button_Click"/>
   </StackPanel>

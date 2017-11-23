@@ -3,21 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ObservableBinding.WPF.AttachedProp"
+        xmlns:o="clr-namespace:ObservableBinding.WPF.AttachedProp"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
   <StackPanel x:Name="sp">
 
-    <TextBlock local:OBind.Text="{Binding StringStream}"/>
-    <TextBox local:OBind.Text="{Binding StringStream}"/>
-    <TextBox local:OEmit.Text="{Binding StringSubject}" />
-    <TextBox local:OEmit.Text="{Binding StringSubject}" 
-             local:OBind.Text="{Binding StringSubject}"
-             local:OEmit.IsFocused="{Binding BoolSubject}"/>
-    <TextBlock local:OBind.Text="{Binding StringSubject}"/>
-    <Slider local:OEmit.ValueAsDouble="{Binding DoubleSubject}" Maximum="100"/>
-    <TextBlock local:OBind.Text="{Binding DoubleAsStringStream}"/>
-    <TextBlock local:OBind.Text="{Binding BoolAsStringStream}"/>
+    <TextBlock o:Bind.Text="{Binding StringStream}"/>
+    <TextBox o:Bind.Text="{Binding StringStream}"/>
+    <TextBox o:Emit.Text="{Binding StringSubject}" />
+    <TextBox o:Emit.Text="{Binding StringSubject}" 
+             o:Bind.Text="{Binding StringSubject}"
+             o:Emit.IsFocused="{Binding BoolSubject}"/>
+    <TextBlock o:Bind.Text="{Binding StringSubject}"/>
+    <Slider o:Emit.ValueAsDouble="{Binding DoubleSubject}" Maximum="100"/>
+    <TextBlock o:Bind.Text="{Binding DoubleAsStringStream}"/>
+    <TextBlock o:Bind.Text="{Binding BoolAsStringStream}"/>
 
     <Button Content="remove children" Click="Button_Click"/>
   </StackPanel>

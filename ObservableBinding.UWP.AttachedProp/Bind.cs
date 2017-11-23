@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Media;
 
 namespace ObservableBinding.UWP.AttachedProp
 {
-  public static class OBind
+  public static class Bind
   {
     private static SubscriptionKeeper subscriptionKeeper = new SubscriptionKeeper();
 
@@ -33,7 +33,7 @@ namespace ObservableBinding.UWP.AttachedProp
         DependencyProperty.RegisterAttached(
           "Text",
           typeof(IObservable<object>),
-          typeof(OBind),
+          typeof(Bind),
           new PropertyMetadata(null, (d, e) => SubscribeTextProperty(d, e)));
 
     private static void SubscribeTextProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -65,7 +65,7 @@ namespace ObservableBinding.UWP.AttachedProp
         DependencyProperty.RegisterAttached(
           "ValueAsDouble",
           typeof(IObservable<double>),
-          typeof(OBind),
+          typeof(Bind),
           new PropertyMetadata(0, (d, e) => SubscribePropertyForObservable<double>(d, e, RangeBase.ValueProperty)));
     #endregion
 

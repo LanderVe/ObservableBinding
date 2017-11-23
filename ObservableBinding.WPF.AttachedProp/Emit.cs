@@ -12,7 +12,7 @@ using System.Windows.Controls.Primitives;
 
 namespace ObservableBinding.WPF.AttachedProp
 {
-  public static class OEmit
+  public static class Emit
   {
     private static SubscriptionKeeper subscriptionKeeper = new SubscriptionKeeper();
 
@@ -29,7 +29,7 @@ namespace ObservableBinding.WPF.AttachedProp
 
     // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty TextProperty =
-        DependencyProperty.RegisterAttached("Text", typeof(IObserver<string>), typeof(OEmit), new PropertyMetadata(null, OnTextChanged));
+        DependencyProperty.RegisterAttached("Text", typeof(IObserver<string>), typeof(Emit), new PropertyMetadata(null, OnTextChanged));
 
     private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -69,7 +69,7 @@ namespace ObservableBinding.WPF.AttachedProp
 
     // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty ValueAsDoubleProperty =
-        DependencyProperty.RegisterAttached("ValueAsDouble", typeof(IObserver<double>), typeof(OEmit), new PropertyMetadata(null, OnValueAsDoubleChanged));
+        DependencyProperty.RegisterAttached("ValueAsDouble", typeof(IObserver<double>), typeof(Emit), new PropertyMetadata(null, OnValueAsDoubleChanged));
 
     private static void OnValueAsDoubleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -100,7 +100,7 @@ namespace ObservableBinding.WPF.AttachedProp
     public static readonly DependencyProperty IsFocusedProperty =
         DependencyProperty.RegisterAttached("IsFocused",
           typeof(IObserver<bool>),
-          typeof(OEmit),
+          typeof(Emit),
           new PropertyMetadata(null, (d, e) => OnPropertyChanged<bool>(UIElement.IsFocusedProperty, d, e)));
     #endregion
 

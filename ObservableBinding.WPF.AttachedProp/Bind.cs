@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace ObservableBinding.WPF.AttachedProp
 {
-  public static class OBind
+  public static class Bind
   {
     private static SubscriptionKeeper subscriptionKeeper = new SubscriptionKeeper();
 
@@ -30,7 +30,7 @@ namespace ObservableBinding.WPF.AttachedProp
         DependencyProperty.RegisterAttached(
           "Text", 
           typeof(IObservable<object>),
-          typeof(OBind),
+          typeof(Bind),
           new PropertyMetadata(null, (d,e) => SubscribePropertyForObservable<string>(d,e)));
 
     /* FIRST VERSION */
