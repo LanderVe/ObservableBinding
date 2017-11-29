@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
   <StackPanel x:Name="sp">
+    <TextBlock Text="{o:Bind StringStream, Mode=OneWay}"/>
     <TextBlock Text="{o:Bind StringSubject, Mode=OneTime}"/>
     <TextBlock Text="{o:Bind StringSubject, Mode=OneWay}"/>
     <TextBox Text="{o:Bind StringSubject, Mode=OneWay}"/>

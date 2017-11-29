@@ -69,6 +69,9 @@ namespace ObservableBinding.WPF.MarkupExt
       //sanity check
       if (source == null) return;
 
+      var boundObject = GetObjectFromPath(source, Path.Path);
+      if (boundObject == null) return;
+
       //set default BindingMode 
       if (Mode == BindingMode.Default)
       {
@@ -83,16 +86,16 @@ namespace ObservableBinding.WPF.MarkupExt
         }
       }
 
-      //Bind to Observable and update property
+      //bind to Observable and update property
       if (Mode == BindingMode.OneTime || Mode == BindingMode.OneWay || Mode == BindingMode.TwoWay)
       {
-        SetupListenerBinding(source);
+        SetupListenerBinding(boundObject);
       }
 
       //send property values to Observer
       if (Mode == BindingMode.OneWayToSource || Mode == BindingMode.TwoWay)
       {
-        SetupEmitBinding(source);
+        SetupEmitBinding(boundObject);
       }
 
     }
@@ -105,11 +108,8 @@ namespace ObservableBinding.WPF.MarkupExt
     }
 
     #region Listen
-    private void SetupListenerBinding(object source)
+    private void SetupListenerBinding(object observable)
     {
-      //get observable from path
-      var observable = GetObjectFromPath(source, Path.Path);
-
       //IObservable<T> --> typeof(T)
       var observableGenericType = observable.GetType()
         .GetInterfaces()
@@ -120,39 +120,34 @@ namespace ObservableBinding.WPF.MarkupExt
       MethodInfo method = typeof(BindExtension)
         .GetMethod(nameof(SubscribePropertyForObservable), BindingFlags.NonPublic | BindingFlags.Instance);
       MethodInfo generic = method.MakeGenericMethod(observableGenericType);
-      generic.Invoke(this, new object[] { observable, bindingTarget, bindingProperty, Mode == BindingMode.OneTime });
+      generic.Invoke(this, new object[] { observable, bindingTarget, bindingProperty });
     }
 
-    private void SubscribePropertyForObservable<TProperty>(IObservable<TProperty> observable, DependencyObject d, DependencyProperty property, bool isOneTime)
+    private void SubscribePropertyForObservable<TProperty>(IObservable<TProperty> observable, DependencyObject d, DependencyProperty property)
     {
-      if (observable != null)
+      if (observable == null) return;
+
+      if (Mode == BindingMode.OneTime)
       {
-        if (isOneTime)
-        {
-          observable = observable.Take(1);
-        }
+        observable = observable.Take(1);
+      }
 
-        //automatic ToString
-        if (property.PropertyType == typeof(string) && typeof(TProperty) != typeof(string))
-        {
-          listenSubscription = observable.Select(val => val.ToString()).ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
-        }
-        //any other case
-        else
-        {
-          listenSubscription = observable.ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
-        }
-
+      //automatic ToString
+      if (property.PropertyType == typeof(string) && typeof(TProperty) != typeof(string))
+      {
+        listenSubscription = observable.Select(val => val.ToString()).ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
+      }
+      //any other case
+      else
+      {
+        listenSubscription = observable.ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
       }
     }
     #endregion
 
     #region Emit
-    private void SetupEmitBinding(object source)
+    private void SetupEmitBinding(object observer)
     {
-      //Get IObserver from path
-      var observer = GetObjectFromPath(source, Path.Path);
-
       //add subscription
       MethodInfo method = typeof(BindExtension)
         .GetMethod(nameof(SubScribeObserverForProperty), BindingFlags.NonPublic | BindingFlags.Instance);
@@ -171,6 +166,14 @@ namespace ObservableBinding.WPF.MarkupExt
     #endregion
 
     #region Helper
+
+    /// <summary>
+    /// Not all DependencyObjects have a DataContext Property
+    /// e.g. RotateTransform
+    /// If the Binding happens there, this method will travel up the logical tree to retrieve the first parent that does have it
+    /// </summary>
+    /// <param name="d"></param>
+    /// <returns></returns>
     public FrameworkElement FindDataContextSource(DependencyObject d)
     {
       DependencyObject current = d;
@@ -182,6 +185,13 @@ namespace ObservableBinding.WPF.MarkupExt
       return (FrameworkElement)current;
     }
 
+    /// <summary>
+    /// If the Binding looks something like this
+    /// {o:Bind Parent.Child.SubChild}, we need to retrieve SubChild
+    /// </summary>
+    /// <param name="dataContext"></param>
+    /// <param name="path"></param>
+    /// <returns>The value returned by the path, null if any properties in the chain is null</returns>
     private object GetObjectFromPath(object dataContext, string path)
     {
       var properties = path.Split('.');
@@ -189,6 +199,7 @@ namespace ObservableBinding.WPF.MarkupExt
 
       foreach (var prop in properties)
       {
+        if (current == null) break;
         current = current.GetType().GetProperty(prop).GetValue(current);
       }
 

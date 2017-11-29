@@ -59,19 +59,22 @@ namespace Xam
       //sanity check
       if (source == null) return;
 
+      var boundObject = GetObjectFromPath(source, Path);
+      if (boundObject == null) return;
+
       //set default BindingMode 
       if (Mode == BindingMode.Default) Mode = bindingProperty.DefaultBindingMode;
 
-      //Bind to Observable and update property
+      //bind to Observable and update property
       if (Mode == BindingMode.OneWay || Mode == BindingMode.TwoWay)
       {
-        SetupListenerBinding(source);
+        SetupListenerBinding(boundObject);
       }
 
       //send property values to Observer
       if (Mode == BindingMode.OneWayToSource || Mode == BindingMode.TwoWay)
       {
-        SetupEmitBinding(source);
+        SetupEmitBinding(boundObject);
       }
 
     }
@@ -84,11 +87,8 @@ namespace Xam
     }
 
     #region Listen
-    private void SetupListenerBinding(object source)
+    private void SetupListenerBinding(object observable)
     {
-      //get observable from path
-      var observable = GetObjectFromPath(source, Path);
-
       //IObservable<T> --> typeof(T)
       var observableGenericType = observable.GetType().GetTypeInfo()
         .ImplementedInterfaces
@@ -101,7 +101,7 @@ namespace Xam
         .Single();
 
       MethodInfo generic = method.MakeGenericMethod(observableGenericType);
-      generic.Invoke(this, new object[] { observable, bindingTarget, bindingProperty});
+      generic.Invoke(this, new object[] { observable, bindingTarget, bindingProperty });
     }
 
     private void SubscribePropertyForObservable<TProperty>(IObservable<TProperty> observable, BindableObject d, BindableProperty property)
@@ -124,11 +124,8 @@ namespace Xam
     #endregion
 
     #region Emit
-    private void SetupEmitBinding(object source)
+    private void SetupEmitBinding(object observer)
     {
-      //Get IObserver from path
-      var observer = GetObjectFromPath(source, Path);
-
       //add subscription
       MethodInfo method = typeof(BindExtension).GetTypeInfo().DeclaredMethods
         .Where(mi => mi.Name == nameof(SubScribeObserverForProperty))
@@ -148,7 +145,13 @@ namespace Xam
     #endregion
 
     #region Helper
-
+    /// <summary>
+    /// If the Binding looks something like this
+    /// {o:Bind Parent.Child.SubChild}, we need to retrieve SubChild
+    /// </summary>
+    /// <param name="dataContext"></param>
+    /// <param name="path"></param>
+    /// <returns>The value returned by the path, null if any properties in the chain is null</returns>
     private object GetObjectFromPath(object bindingContext, string path)
     {
       var properties = path.Split('.');
@@ -156,6 +159,7 @@ namespace Xam
 
       foreach (var prop in properties)
       {
+        if (current == null) break;
         current = current.GetType().GetRuntimeProperty(prop).GetValue(current);
       }
 
