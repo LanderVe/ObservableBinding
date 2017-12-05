@@ -28,8 +28,9 @@ namespace Xam
 
     public object ProvideValue(IServiceProvider serviceProvider)
     {
+      var valueProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
 
-      if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget valueProvider)
+      if (valueProvider != null)
       {
         bindingTarget = valueProvider.TargetObject as BindableObject;
         bindingProperty = valueProvider.TargetProperty as BindableProperty;
@@ -106,20 +107,19 @@ namespace Xam
 
     private void SubscribePropertyForObservable<TProperty>(IObservable<TProperty> observable, BindableObject d, BindableProperty property)
     {
-      if (observable != null)
-      {
-        //automatic ToString
-        if (property.ReturnType == typeof(string) && typeof(TProperty) != typeof(string))
-        {
-          listenSubscription = observable.Select(val => val.ToString()).ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
-        }
-        //any other case
-        else
-        {
-          listenSubscription = observable.ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
-        }
+      if (observable == null) return;
 
+      //automatic ToString
+      if (property.ReturnType == typeof(string) && typeof(TProperty) != typeof(string))
+      {
+        listenSubscription = observable.Select(val => val.ToString()).ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
       }
+      //any other case
+      else
+      {
+        listenSubscription = observable.ObserveOn(SynchronizationContext.Current).Subscribe(val => d.SetValue(property, val));
+      }
+
     }
     #endregion
 
@@ -130,6 +130,7 @@ namespace Xam
       MethodInfo method = typeof(BindExtension).GetTypeInfo().DeclaredMethods
         .Where(mi => mi.Name == nameof(SubScribeObserverForProperty))
         .Single();
+
       MethodInfo generic = method.MakeGenericMethod(bindingProperty.ReturnType);
       generic.Invoke(this, new object[] { observer, bindingTarget, bindingProperty });
     }
