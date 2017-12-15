@@ -71,19 +71,38 @@ namespace ObservableBinding.UWP.AttachedProp
 
     private static void SubscribePropertyForObservable<TProperty>(DependencyObject d, DependencyPropertyChangedEventArgs e, DependencyProperty propertyToMonitor)
     {
-      var newStream = e.NewValue as IObservable<TProperty>;
       IDisposable newSub = null;
 
       //destroy when unloaded from main tree
-      ((FrameworkElement)d).Unloaded += (s,ea) => subscriptionKeeper.UpdateSubscriptions(d, propertyToMonitor, null);
+      var frameworkelement = FindParentByType<FrameworkElement>(d);
+      frameworkelement.Unloaded += (s,ea) => subscriptionKeeper.UpdateSubscriptions(d, propertyToMonitor, null);
 
-      if (newStream != null)
+      if (e.NewValue is IObservable<TProperty> newStream)
       {
         newSub = newStream.ObserveOn(SynchronizationContext.Current)
           .Subscribe(val => d.SetValue(propertyToMonitor, val));
       }
 
       subscriptionKeeper.UpdateSubscriptions(d, propertyToMonitor, newSub);
+    }
+
+    /// <summary>
+    /// Not all DependencyObjects have a DataContext Property
+    /// e.g. RotateTransform
+    /// If the Binding happens there, this method will travel up the logical tree to retrieve the first parent that does have it
+    /// </summary>
+    /// <param name="d"></param>
+    /// <returns></returns>
+    public static TParent FindParentByType<TParent>(DependencyObject d)
+      where TParent: DependencyObject
+    {
+      DependencyObject current = d;
+      while (!(current is TParent) && current != null)
+      {
+        current = VisualTreeHelper.GetParent(d);
+      }
+
+      return (TParent)current;
     }
 
 

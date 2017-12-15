@@ -14,7 +14,7 @@ namespace ObservableBinding.UWP.AttachedProp
   /// </summary>
   internal class SubscriptionKeeper
   {
-    private static Dictionary<DependencyObject, Dictionary<DependencyProperty, IDisposable>> subscriptions = new Dictionary<DependencyObject, Dictionary<DependencyProperty, IDisposable>>();
+    private Dictionary<DependencyObject, Dictionary<DependencyProperty, IDisposable>> subscriptions = new Dictionary<DependencyObject, Dictionary<DependencyProperty, IDisposable>>();
 
     public void UpdateSubscriptions(DependencyObject control, DependencyProperty prop, IDisposable newSub)
     {

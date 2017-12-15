@@ -14,8 +14,7 @@ namespace ObservableBinding.UWP.AttachedProp
 {
   public static class Utils
   {
-    public static IObservable<TProperty> Observe<TComponent, TProperty>(this TComponent component, DependencyProperty dependencyProperty)
-    where TComponent : DependencyObject
+    public static IObservable<TProperty> Observe<TProperty>(this DependencyObject component, DependencyProperty dependencyProperty)
     {
       return Observable.Create<TProperty>(observer => {
 

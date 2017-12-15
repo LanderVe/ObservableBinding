@@ -13,7 +13,7 @@
     <TextBox o:Bind.Text="{Binding StringStream}"/>
     <TextBox o:Emit.Text="{Binding StringSubject}" />
     <TextBox o:Emit.Text="{Binding StringSubject}" 
-             o:Bind.Text="{Binding StringSubject}"/>
+             o:Bind.Text="{Binding StringSubject}" />
     <TextBlock o:Bind.Text="{Binding StringSubject}"/>
     <Slider o:Emit.ValueAsDouble="{Binding DoubleSubject}" Maximum="100"/>
     <TextBlock o:Bind.Text="{Binding DoubleAsStringStream}"/>

@@ -57,13 +57,11 @@ namespace ObservableBinding.UWP.AttachedProp
 
     private static void OnPropertyChanged<TProperty>(DependencyObject d, DependencyPropertyChangedEventArgs e, DependencyProperty propertyToMonitor)
     {
-      var newObserver = e.NewValue as IObserver<TProperty>;
-      //DependencyProperty propertyToMonitor = e.Property;
       IDisposable newSub = null;
 
-      if (newObserver != null)
+      if (e.NewValue is IObserver<TProperty> newObserver)
       {
-        newSub = d.Observe<DependencyObject, TProperty>(propertyToMonitor)
+        newSub = d.Observe<TProperty>(propertyToMonitor)
                   .Subscribe(newObserver);
       }
 
